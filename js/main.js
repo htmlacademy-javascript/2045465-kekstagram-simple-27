@@ -1,5 +1,5 @@
 //Функция для проверки максимальной длины строки
-function getStringLength (testString, maxLength) {
+function checkString (testString, maxLength) {
   if (testString.length <= maxLength) {
     return true;
   } else {
@@ -7,7 +7,7 @@ function getStringLength (testString, maxLength) {
   }
 }
 
-getStringLength (1, 2); // временно вызвала чтобы ESLint не ругался
+checkString ('', 2); // временно вызвала чтобы ESLint не ругался
 
 
 //Функция возвращает случайное целое число из переданного диапазона включительно
