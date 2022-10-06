@@ -1,10 +1,6 @@
 //Функция для проверки максимальной длины строки
 function checkString (testString, maxLength) {
-  if (testString.length <= maxLength) {
-    return true;
-  } else {
-    return false;
-  }
+  return (testString.length <= maxLength);
 }
 
 checkString ('', 2); // временно вызвала чтобы ESLint не ругался
