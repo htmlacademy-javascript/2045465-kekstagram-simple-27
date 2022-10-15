@@ -23,6 +23,6 @@ const createPhotos = (countPhotos) => {
   return similarPhotos;
 };
 
-createPhotos(SIMILAR_PHOTO_COUNT);//(similarPhotos, SIMILAR_PHOTO_COUNT);
+createPhotos(SIMILAR_PHOTO_COUNT);
 export {createPhotos};
 export {SIMILAR_PHOTO_COUNT};
