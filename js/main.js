@@ -1,2 +1,3 @@
 import {createPhotos} from './data.js';
-createPhotos();
+import {SIMILAR_PHOTO_COUNT} from './data.js';
+createPhotos(SIMILAR_PHOTO_COUNT);

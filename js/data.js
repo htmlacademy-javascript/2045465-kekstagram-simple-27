@@ -1,6 +1,5 @@
 import {getRandomInteger} from './util.js';
 const SIMILAR_PHOTO_COUNT = 25;
-const similarPhotos = [];
 
 const DESCRIPTION = [
   'Ты, похоже, ушел в себя… и кстати, неплохо затусил.',
@@ -9,9 +8,10 @@ const DESCRIPTION = [
   'Вызывай экзорциста. Уже пора!'
 ];
 
-const createPhotos = (arrPhotos, countPhotos) => {
+const createPhotos = (countPhotos) => {
+  const similarPhotos = [];
   for (let i = 1; i <= countPhotos; i++) {
-    arrPhotos.push(
+    similarPhotos.push(
       {
         id: i,
         url: `photos/${i}.jpg`,
@@ -20,8 +20,9 @@ const createPhotos = (arrPhotos, countPhotos) => {
         comments: getRandomInteger(0,200),
       });
   }
-  return arrPhotos;
+  return similarPhotos;
 };
 
-createPhotos(similarPhotos, SIMILAR_PHOTO_COUNT);
+createPhotos(SIMILAR_PHOTO_COUNT);//(similarPhotos, SIMILAR_PHOTO_COUNT);
 export {createPhotos};
+export {SIMILAR_PHOTO_COUNT};
