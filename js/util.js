@@ -23,5 +23,8 @@ function getRandomInteger (min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; // ссылка на источник https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
 }
-export {getRandomInteger};
+
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getRandomInteger, isEscapeKey};
 //export {checkString};
