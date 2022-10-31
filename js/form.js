@@ -12,6 +12,9 @@ const scaleValue = document.querySelector('.scale__control--value');
 const imagePreview = document.querySelector('.img-upload__preview');
 const uploadImage = document.querySelector('.img-upload__image');
 const effectsList = document.querySelector('.effects__list');
+const effectLevelValue = document.querySelector('.effect-level__value');
+const sliderElement = document.querySelector('.effect-level__slider');
+const elementRadio = document.querySelector('.effects__radio ');
 
 // Переменные для масштабирования
 const minScale = 25;
@@ -49,6 +52,7 @@ function openUserModal () {
   // Добавить обработчик закрытия
   document.addEventListener('keydown', onModalEscKeydown);
   buttonSubmit.setAttribute('disabled', 'disabled');
+  sliderElement.noUiSlider.destroy();
 }
 
 function closeUserModal () {
@@ -98,6 +102,90 @@ effectsList.addEventListener('change', (evt) => {
   const overlayEffect = `effects__preview--${evt.target.value}`;
   imagePreview.classList.add(overlayEffect);
   effectsPreview = overlayEffect;
+});
+
+//слайдер
+const specialEffect = {
+  'none': {range: {
+    min: 0,
+    max: 1,
+  }
+  },
+  'chrome': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+  },
+  'sepia': {range: {
+    min: 0,
+    max: 1,
+  },
+  start: 1,
+  step: 0.1,
+  },
+  'marvin': {range: {
+    min: 0,
+    max: 100,
+  },
+  start: 100,
+  step: 1,
+  },
+  'phobos': {range: {
+    min: 0,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  },
+  'heat': {range: {
+    min: 1,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  }
+};
+
+noUiSlider.create(sliderElement, {
+  range: {
+    min: 0,
+    max: 100,
+  },
+  start: 0,
+  step: 0.1,
+});
+
+sliderElement.noUiSlider.on('update', () => {
+  effectLevelValue.value = sliderElement.noUiSlider.get();
+});
+
+// effectsList.addEventListener('change', (evt) => {
+//   if (evt.target.value === 'none') {
+//     sliderElement.noUiSlider.destroy();
+//   } else {
+//     if (typeof sliderElement.noUiSlider !== 'undefined') {
+//       sliderElement.noUiSlider.updateOptions(specialEffect[evt.target.value]);
+//       sliderElement.noUiSlider.set(specialEffect[evt.target.value].start);
+//     } else {
+//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
+//     }
+//   }
+// });
+
+effectsList.addEventListener('change', (evt) => {
+  if (evt.target.value === 'none') {
+    sliderElement.noUiSlider.destroy();
+  } else {
+    if (typeof sliderElement.noUiSlider !== 'undefined') {
+      sliderElement.noUiSlider.destroy();
+      noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
+    } else {
+      noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
+    }
+  }
 });
 
 //Валидация
