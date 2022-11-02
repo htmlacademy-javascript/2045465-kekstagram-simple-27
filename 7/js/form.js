@@ -14,6 +14,7 @@ const uploadImage = document.querySelector('.img-upload__image');
 const effectsList = document.querySelector('.effects__list');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
+const effectLevel = document.querySelector('.effect-level');
 
 // Переменные для масштабирования
 const minScale = 25;
@@ -21,7 +22,7 @@ const maxScale = 100;
 let userScale = 100;
 
 // Переменная для хранения текушего эффекта
-let currentStyle; // сначала эффект пустой
+let currentStyle = 'none';
 
 //Поле в фокусе - esc не работает
 const isFieldFocused = () =>
@@ -36,7 +37,7 @@ const onModalEscKeydown = (evt) => {
 
 //ф-ция возвращает данные к исходному состоянию
 const setDefaultForm = () => {
-  imagePreview.classList.remove(currentStyle);
+  imagePreview.classList.remove(`effects__preview--${currentStyle}`);
   scaleValue.value = '100 %';
   userScale = 100;
   uploadImage.style.transform = 'scale(1)';
@@ -46,17 +47,18 @@ const setDefaultForm = () => {
 
 function openUserModal () {
   // Показать окно
+  effectLevel.classList.add('hidden');
   imageLoading.classList.remove('hidden');
   body.classList.add('modal-open');
   // Добавить обработчик закрытия
   document.addEventListener('keydown', onModalEscKeydown);
   buttonSubmit.setAttribute('disabled', 'disabled');
-  sliderElement.classList.add('hidden');
 }
 
 function closeUserModal () {
   // Скрыть окно
   imageLoading.classList.add('hidden');
+  imagePreview.removeAttribute('style');
   body.classList.remove('modal-open');
   // Удалить обработчик
   document.removeEventListener('keydown', onModalEscKeydown);
@@ -172,21 +174,25 @@ noUiSlider.create(sliderElement, {
     max: 1,
   },
   step: 0.1,
+  connect: 'lower',
 });
 
+//
 sliderElement.noUiSlider.on('update', () => {
   effectLevelValue.value = sliderElement.noUiSlider.get();
-  if (currentStyle){
+  if (currentStyle !== 'none'){
     imagePreview.style.filter = `${specialEffect[currentStyle].style}(${effectLevelValue.value}${specialEffect[currentStyle].unit})`;
+  } else {
+    imagePreview.removeAttribute('style');
   }
 });
 
 const updateSlider = (chosenEffect) => {
   sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
-  sliderElement.classList.remove('hidden');
+  effectLevel.classList.remove('hidden');
   sliderElement.noUiSlider.set(specialEffect[chosenEffect].start); // потому что updateOption не обнавляет start
   if (chosenEffect === 'none') {
-    sliderElement.classList.add('hidden');
+    effectLevel.classList.add('hidden');
   }
 };
 
