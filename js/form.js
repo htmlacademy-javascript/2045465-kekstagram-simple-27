@@ -159,7 +159,6 @@ const specialEffect = {
 //     if (typeof sliderElement.noUiSlider !== 'undefined') {
 //       sliderElement.noUiSlider.destroy();
 //       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
-//       //imagePreview.style.filter = `${specialEffect[style]}(${effectLevelValue[value]}${specialEffect[unit]})`;
 //     } else {
 //       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
 //     }
