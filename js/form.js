@@ -12,6 +12,9 @@ const scaleValue = document.querySelector('.scale__control--value');
 const imagePreview = document.querySelector('.img-upload__preview');
 const uploadImage = document.querySelector('.img-upload__image');
 const effectsList = document.querySelector('.effects__list');
+const effectLevelValue = document.querySelector('.effect-level__value');
+const sliderElement = document.querySelector('.effect-level__slider');
+const effectLevel = document.querySelector('.effect-level');
 
 // Переменные для масштабирования
 const minScale = 25;
@@ -19,7 +22,7 @@ const maxScale = 100;
 let userScale = 100;
 
 // Переменная для хранения текушего эффекта
-let effectsPreview; // сначала эффект пустой
+let currentStyle = 'none';
 
 //Поле в фокусе - esc не работает
 const isFieldFocused = () =>
@@ -34,7 +37,7 @@ const onModalEscKeydown = (evt) => {
 
 //ф-ция возвращает данные к исходному состоянию
 const setDefaultForm = () => {
-  imagePreview.classList.remove(effectsPreview);
+  imagePreview.classList.remove(`effects__preview--${currentStyle}`);
   scaleValue.value = '100 %';
   userScale = 100;
   uploadImage.style.transform = 'scale(1)';
@@ -44,6 +47,7 @@ const setDefaultForm = () => {
 
 function openUserModal () {
   // Показать окно
+  effectLevel.classList.add('hidden');
   imageLoading.classList.remove('hidden');
   body.classList.add('modal-open');
   // Добавить обработчик закрытия
@@ -54,6 +58,7 @@ function openUserModal () {
 function closeUserModal () {
   // Скрыть окно
   imageLoading.classList.add('hidden');
+  imagePreview.removeAttribute('style');
   body.classList.remove('modal-open');
   // Удалить обработчик
   document.removeEventListener('keydown', onModalEscKeydown);
@@ -92,12 +97,111 @@ buttonBigger.addEventListener('click', () => {
   scaleBigger();
 });
 
+const specialEffect = {
+  'none': {range: {
+    min: 0,
+    max: 100,
+  },
+  step: 1,
+  style: '',
+  unit: '',
+  },
+  'chrome': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    style: 'grayscale',
+    unit: '',
+  },
+  'sepia': {range: {
+    min: 0,
+    max: 1,
+  },
+  start: 1,
+  step: 0.1,
+  style: 'sepia',
+  unit: '',
+  },
+  'marvin': {range: {
+    min: 0,
+    max: 100,
+  },
+  start: 100,
+  step: 1,
+  style: 'invert',
+  unit: '%',
+  },
+  'phobos': {range: {
+    min: 0,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  style: 'blur',
+  unit: 'px',
+  },
+  'heat': {range: {
+    min: 1,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  style: 'brightness',
+  unit: '',
+  }
+};
+
+// effectsList.addEventListener('change', (evt) => {
+//   if (evt.target.value === 'none') {
+//     sliderElement.noUiSlider.destroy();
+//   } else {
+//     if (typeof sliderElement.noUiSlider !== 'undefined') {
+//       sliderElement.noUiSlider.destroy();
+//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
+//     } else {
+//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
+//     }
+//   }
+// });
+
+noUiSlider.create(sliderElement, {
+  start: 0,
+  range: {
+    min: 0,
+    max: 1,
+  },
+  step: 0.1,
+  connect: 'lower',
+});
+
+//
+sliderElement.noUiSlider.on('update', () => {
+  effectLevelValue.value = sliderElement.noUiSlider.get();
+  if (currentStyle !== 'none'){
+    imagePreview.style.filter = `${specialEffect[currentStyle].style}(${effectLevelValue.value}${specialEffect[currentStyle].unit})`;
+  } else {
+    imagePreview.removeAttribute('style');
+  }
+});
+
+const updateSlider = (chosenEffect) => {
+  sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
+  effectLevel.classList.remove('hidden');
+  sliderElement.noUiSlider.set(specialEffect[chosenEffect].start); // потому что updateOption не обнавляет start
+  if (chosenEffect === 'none') {
+    effectLevel.classList.add('hidden');
+  }
+};
+
 //наложение эффектов
 effectsList.addEventListener('change', (evt) => {
-  imagePreview.classList.remove(effectsPreview);
-  const overlayEffect = `effects__preview--${evt.target.value}`;
-  imagePreview.classList.add(overlayEffect);
-  effectsPreview = overlayEffect;
+  imagePreview.classList.remove(`effects__preview--${currentStyle}`);
+  currentStyle = evt.target.value;
+  imagePreview.classList.add(`effects__preview--${currentStyle}`);
+  updateSlider(currentStyle);
 });
 
 //Валидация
