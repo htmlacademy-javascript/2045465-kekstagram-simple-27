@@ -26,5 +26,5 @@ function getRandomInteger (min, max) {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {getRandomInteger, isEscapeKey};
+export {getRandomInteger, isEscapeKey,};
 //export {checkString};

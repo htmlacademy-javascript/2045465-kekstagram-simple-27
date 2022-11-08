@@ -1,4 +1,5 @@
 import {isEscapeKey} from './util.js';
+import {sendData} from './api.js';
 const body = document.querySelector ('body');
 const loadingFile = document.querySelector ('#upload-file');
 const buttonCancel = document.querySelector('#upload-cancel');
@@ -217,3 +218,72 @@ imageForm.addEventListener('input', () => {
     buttonSubmit.setAttribute('disabled', 'disabled');
   }
 });
+
+//elfkdkjfbv
+const ALERT_SHOW_TIME = 3000;
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '100';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = '0';
+  alertContainer.style.top = '0';
+  alertContainer.style.right = '0';
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+//kdjhfk
+
+//отправка данных на сервер
+const blockSubmitButton = () => {
+  buttonSubmit.disabled = true;
+  buttonSubmit.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  buttonSubmit.disabled = false;
+  buttonSubmit.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess) => {
+  imageForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => {
+          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+// const successButton = document.querySelector('.success__button');
+// const showSuccessAlert = (message) => {
+//   const successMessage = document.querySelector('#success').content.querySelector('.success');
+//   successMessage.textContent = message;
+// };
+// successButton.addEventListener('click', () => {
+//   showSuccessAlert.remove();
+// });
+
+export {setUserFormSubmit, openUserModal, closeUserModal};
