@@ -1,3 +1,5 @@
+import { showAlert } from './util.js';
+
 const getData = (onSuccess) => {
   fetch('https://27.javascript.pages.academy/kekstagram-simple/data')
     .then((response) => response.json())
@@ -6,23 +8,27 @@ const getData = (onSuccess) => {
     });
 };
 
+
 const sendData = (onSuccess, onFail, body) => {
   fetch(
     'https://27.javascript.pages.academy/kekstagram-simple',
     {
       method: 'POST',
-      body,
+      // headers: {
+      //   'Content-Type': 'multipart/form-data'
+      // },
+      body: body,
     },
   )
     .then((response) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз'); //throw new Error('данные не валидны')
+        onFail();
       }
     })
     .catch((err) => {
-      onFail(err.message);
+      showAlert(err.message);
     });
 };
 

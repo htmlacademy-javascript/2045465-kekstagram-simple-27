@@ -1,5 +1,6 @@
-import {isEscapeKey} from './util.js';
 import {sendData} from './api.js';
+import {openSuccessMessage, openErrorMessage} from './data-message.js';
+import { showAlert } from './util.js';
 const body = document.querySelector ('body');
 const loadingFile = document.querySelector ('#upload-file');
 const buttonCancel = document.querySelector('#upload-cancel');
@@ -26,11 +27,13 @@ let userScale = 100;
 let currentStyle = 'none';
 
 //Поле в фокусе - esc не работает
-const isFieldFocused = () =>
-  document.activeElement === comment;
+// разобраться с делегированием событий!!!!!!!!
+const isCommentFocused = () => document.activeElement === comment;
+
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const onModalEscKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isFieldFocused()) {
+  if (isEscapeKey(evt) && !isCommentFocused()) {
     evt.preventDefault();
     closeUserModal ();
   }
@@ -53,7 +56,7 @@ function openUserModal () {
   body.classList.add('modal-open');
   // Добавить обработчик закрытия
   document.addEventListener('keydown', onModalEscKeydown);
-  buttonSubmit.setAttribute('disabled', 'disabled');
+  //buttonSubmit.disabled = true;
 }
 
 function closeUserModal () {
@@ -98,6 +101,8 @@ buttonBigger.addEventListener('click', () => {
   scaleBigger();
 });
 
+
+// Доступные стили
 const specialEffect = {
   'none': {range: {
     min: 0,
@@ -155,19 +160,7 @@ const specialEffect = {
   }
 };
 
-// effectsList.addEventListener('change', (evt) => {
-//   if (evt.target.value === 'none') {
-//     sliderElement.noUiSlider.destroy();
-//   } else {
-//     if (typeof sliderElement.noUiSlider !== 'undefined') {
-//       sliderElement.noUiSlider.destroy();
-//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
-//     } else {
-//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
-//     }
-//   }
-// });
-
+// создаем слайдер
 noUiSlider.create(sliderElement, {
   start: 0,
   range: {
@@ -178,7 +171,7 @@ noUiSlider.create(sliderElement, {
   connect: 'lower',
 });
 
-//
+// обработчик движения слайдера
 sliderElement.noUiSlider.on('update', () => {
   effectLevelValue.value = sliderElement.noUiSlider.get();
   if (currentStyle !== 'none'){
@@ -188,6 +181,7 @@ sliderElement.noUiSlider.on('update', () => {
   }
 });
 
+// обновление слайдера при смене стиля
 const updateSlider = (chosenEffect) => {
   sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
   effectLevel.classList.remove('hidden');
@@ -205,44 +199,17 @@ effectsList.addEventListener('change', (evt) => {
   updateSlider(currentStyle);
 });
 
-//Валидация
-
-const pristine = new Pristine(imageForm);
-
-// Проверка на ввод в поле коментария
-imageForm.addEventListener('input', () => {
-  const isValid = pristine.validate();
-  if (isValid) {
-    buttonSubmit.removeAttribute('disabled');
-  } else {
-    buttonSubmit.setAttribute('disabled', 'disabled');
-  }
-});
-
-//elfkdkjfbv
-const ALERT_SHOW_TIME = 3000;
-const showAlert = (message) => {
-  const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = '100';
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.left = '0';
-  alertContainer.style.top = '0';
-  alertContainer.style.right = '0';
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '30px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
-
-  alertContainer.textContent = message;
-
-  document.body.append(alertContainer);
-
-  setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_SHOW_TIME);
-};
-
-//kdjhfk
+// //Валидация - она же по новым условиям проверяется только при откравке?
+// const pristine = new Pristine(imageForm);
+// // Проверка на ввод в поле коментария
+// imageForm.addEventListener('input', () => {
+//   const isValid = pristine.validate();
+//   if (isValid) {
+//     buttonSubmit.disabled = false;
+//   } else {
+//     buttonSubmit.disabled = true;
+//   }
+// });
 
 //отправка данных на сервер
 const blockSubmitButton = () => {
@@ -257,18 +224,25 @@ const unblockSubmitButton = () => {
 
 const setUserFormSubmit = (onSuccess) => {
   imageForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+    evt.preventDefault(); // оключили
+
+    // проверяю правильность заполнения формы
+    // нужно ли проверять если я проверяю при импуте????
+    // подумать
+    const pristine = new Pristine(imageForm);
 
     const isValid = pristine.validate();
     if (isValid) {
-      blockSubmitButton();
+      blockSubmitButton(); //пакость 1
       sendData(
         () => {
-          onSuccess();
+          onSuccess(); //закрытие модал
           unblockSubmitButton();
+          openSuccessMessage();
         },
         () => {
-          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          //showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          openErrorMessage();
           unblockSubmitButton();
         },
         new FormData(evt.target),
@@ -277,13 +251,4 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-// const successButton = document.querySelector('.success__button');
-// const showSuccessAlert = (message) => {
-//   const successMessage = document.querySelector('#success').content.querySelector('.success');
-//   successMessage.textContent = message;
-// };
-// successButton.addEventListener('click', () => {
-//   showSuccessAlert.remove();
-// });
-
-export {setUserFormSubmit, openUserModal, closeUserModal};
+export {setUserFormSubmit, openUserModal, closeUserModal, onModalEscKeydown, isEscapeKey};
