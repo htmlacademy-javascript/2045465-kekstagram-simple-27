@@ -1,6 +1,5 @@
 import {sendData} from './api.js';
 import {openSuccessMessage, openErrorMessage} from './data-message.js';
-import { showAlert } from './util.js';
 const body = document.querySelector ('body');
 const loadingFile = document.querySelector ('#upload-file');
 const buttonCancel = document.querySelector('#upload-cancel');
@@ -18,6 +17,9 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level');
 
+//const pristine = new Pristine(imageForm);// может добавить настройки
+
+
 // Переменные для масштабирования
 const minScale = 25;
 const maxScale = 100;
@@ -27,7 +29,6 @@ let userScale = 100;
 let currentStyle = 'none';
 
 //Поле в фокусе - esc не работает
-// разобраться с делегированием событий!!!!!!!!
 const isCommentFocused = () => document.activeElement === comment;
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
@@ -35,7 +36,9 @@ const isEscapeKey = (evt) => evt.key === 'Escape';
 const onModalEscKeydown = (evt) => {
   if (isEscapeKey(evt) && !isCommentFocused()) {
     evt.preventDefault();
-    closeUserModal ();
+    if (!document.querySelector('.error')){
+      closeUserModal ();
+    }
   }
 };
 
@@ -199,7 +202,7 @@ effectsList.addEventListener('change', (evt) => {
   updateSlider(currentStyle);
 });
 
-// //Валидация - она же по новым условиям проверяется только при откравке?
+// //Валидация - она же по новым условиям проверяется только при отправке?
 // const pristine = new Pristine(imageForm);
 // // Проверка на ввод в поле коментария
 // imageForm.addEventListener('input', () => {
@@ -224,16 +227,12 @@ const unblockSubmitButton = () => {
 
 const setUserFormSubmit = (onSuccess) => {
   imageForm.addEventListener('submit', (evt) => {
-    evt.preventDefault(); // оключили
+    evt.preventDefault(); // отключили
 
-    // проверяю правильность заполнения формы
-    // нужно ли проверять если я проверяю при импуте????
-    // подумать
-    const pristine = new Pristine(imageForm);
-
+    const pristine = new Pristine(imageForm);// может добавить настройки
     const isValid = pristine.validate();
     if (isValid) {
-      blockSubmitButton(); //пакость 1
+      blockSubmitButton();
       sendData(
         () => {
           onSuccess(); //закрытие модал
@@ -241,7 +240,6 @@ const setUserFormSubmit = (onSuccess) => {
           openSuccessMessage();
         },
         () => {
-          //showAlert('Не удалось отправить форму. Попробуйте ещё раз');
           openErrorMessage();
           unblockSubmitButton();
         },

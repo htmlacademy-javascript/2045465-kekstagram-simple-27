@@ -1,7 +1,6 @@
 import {getPhotoMiniature} from './miniature.js';
 import './form.js';
-import {getData, sendData} from './api.js';
-import {openSuccessMessage, openErrorMessage} from './data-message.js';
+import {getData} from './api.js';
 import {setUserFormSubmit, closeUserModal} from './form.js';
 
 const SIMILAR_PHOTO_COUNT = 25;
@@ -11,13 +10,3 @@ getData((images)=> {
 });
 
 setUserFormSubmit(closeUserModal);
-
-// const onSendDataSuccess = () => {
-//   setDefaultForm();
-//   openSuccessMessage();
-// };
-
-//???????
-// setUserFormSubmit (async (data) => {
-//   await sendData(onSendDataSuccess, openErrorMessage, data);
-// });

@@ -1,5 +1,4 @@
-
-// отабражение ошибок на сайте
+// отображение ошибок на сайте
 const ALERT_SHOW_TIME = 3000;
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
