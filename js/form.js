@@ -225,19 +225,22 @@ const unblockSubmitButton = () => {
   buttonSubmit.textContent = 'Опубликовать';
 };
 
-const setUserFormSubmit = (onSuccess) => {
+const setUserFormSubmit = () => {
   imageForm.addEventListener('submit', (evt) => {
     evt.preventDefault(); // отключили
 
-    const pristine = new Pristine(imageForm);// может добавить настройки
-    const isValid = pristine.validate();
-    if (isValid) {
+    //const pristine = new Pristine(imageForm);// может добавить настройки
+    //const isValid = pristine.validate();
+    //if (isValid)
+    if (imageForm.checkValidity())
+    {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess(); //закрытие модал
+          closeUserModal(); //закрытие модал
           unblockSubmitButton();
           openSuccessMessage();
+          imageForm.reset();
         },
         () => {
           openErrorMessage();
@@ -249,4 +252,4 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-export {setUserFormSubmit, openUserModal, closeUserModal, onModalEscKeydown, isEscapeKey};
+export {setUserFormSubmit, openUserModal, onModalEscKeydown, isEscapeKey};

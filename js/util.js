@@ -1,5 +1,5 @@
 // отображение ошибок на сайте
-const ALERT_SHOW_TIME = 3000;
+const ALERT_SHOW_TIME = 5000;
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';

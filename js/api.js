@@ -5,6 +5,9 @@ const getData = (onSuccess) => {
     .then((response) => response.json())
     .then((images) => {
       onSuccess(images);
+    })
+    .catch(() => {
+      showAlert('Не удалось загрузить данные. Попробуйте позже');
     });
 };
 
@@ -27,8 +30,8 @@ const sendData = (onSuccess, onFail, body) => {
         onFail();
       }
     })
-    .catch((err) => {
-      showAlert(err.message);
+    .catch(() => {
+      onFail();
     });
 };
 
