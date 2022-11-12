@@ -1,5 +1,12 @@
 import {getPhotoMiniature} from './miniature.js';
-import {createPhotos} from './data.js';
-import {SIMILAR_PHOTO_COUNT} from './data.js';
 import './form.js';
-getPhotoMiniature(createPhotos(SIMILAR_PHOTO_COUNT));
+import {getData} from './api.js';
+import {setUserFormSubmit} from './form.js';
+
+const SIMILAR_PHOTO_COUNT = 25;
+
+getData((images)=> {
+  getPhotoMiniature(images.slice(0, SIMILAR_PHOTO_COUNT));
+});
+
+setUserFormSubmit();

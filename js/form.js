@@ -1,4 +1,5 @@
-import {isEscapeKey} from './util.js';
+import {sendData} from './api.js';
+import {openSuccessMessage, openErrorMessage} from './data-message.js';
 const body = document.querySelector ('body');
 const loadingFile = document.querySelector ('#upload-file');
 const buttonCancel = document.querySelector('#upload-cancel');
@@ -16,6 +17,9 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level');
 
+//const pristine = new Pristine(imageForm);// может добавить настройки
+
+
 // Переменные для масштабирования
 const minScale = 25;
 const maxScale = 100;
@@ -25,13 +29,16 @@ let userScale = 100;
 let currentStyle = 'none';
 
 //Поле в фокусе - esc не работает
-const isFieldFocused = () =>
-  document.activeElement === comment;
+const isCommentFocused = () => document.activeElement === comment;
+
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const onModalEscKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isFieldFocused()) {
+  if (isEscapeKey(evt) && !isCommentFocused()) {
     evt.preventDefault();
-    closeUserModal ();
+    if (!document.querySelector('.error')){
+      closeUserModal ();
+    }
   }
 };
 
@@ -52,7 +59,7 @@ function openUserModal () {
   body.classList.add('modal-open');
   // Добавить обработчик закрытия
   document.addEventListener('keydown', onModalEscKeydown);
-  buttonSubmit.setAttribute('disabled', 'disabled');
+  //buttonSubmit.disabled = true;
 }
 
 function closeUserModal () {
@@ -97,6 +104,8 @@ buttonBigger.addEventListener('click', () => {
   scaleBigger();
 });
 
+
+// Доступные стили
 const specialEffect = {
   'none': {range: {
     min: 0,
@@ -154,19 +163,7 @@ const specialEffect = {
   }
 };
 
-// effectsList.addEventListener('change', (evt) => {
-//   if (evt.target.value === 'none') {
-//     sliderElement.noUiSlider.destroy();
-//   } else {
-//     if (typeof sliderElement.noUiSlider !== 'undefined') {
-//       sliderElement.noUiSlider.destroy();
-//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
-//     } else {
-//       noUiSlider.create(sliderElement, specialEffect[evt.target.value]);
-//     }
-//   }
-// });
-
+// создаем слайдер
 noUiSlider.create(sliderElement, {
   start: 0,
   range: {
@@ -177,7 +174,7 @@ noUiSlider.create(sliderElement, {
   connect: 'lower',
 });
 
-//
+// обработчик движения слайдера
 sliderElement.noUiSlider.on('update', () => {
   effectLevelValue.value = sliderElement.noUiSlider.get();
   if (currentStyle !== 'none'){
@@ -187,6 +184,7 @@ sliderElement.noUiSlider.on('update', () => {
   }
 });
 
+// обновление слайдера при смене стиля
 const updateSlider = (chosenEffect) => {
   sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
   effectLevel.classList.remove('hidden');
@@ -204,16 +202,54 @@ effectsList.addEventListener('change', (evt) => {
   updateSlider(currentStyle);
 });
 
-//Валидация
+// //Валидация - она же по новым условиям проверяется только при отправке?
+// const pristine = new Pristine(imageForm);
+// // Проверка на ввод в поле коментария
+// imageForm.addEventListener('input', () => {
+//   const isValid = pristine.validate();
+//   if (isValid) {
+//     buttonSubmit.disabled = false;
+//   } else {
+//     buttonSubmit.disabled = true;
+//   }
+// });
 
-const pristine = new Pristine(imageForm);
+//отправка данных на сервер
+const blockSubmitButton = () => {
+  buttonSubmit.disabled = true;
+  buttonSubmit.textContent = 'Публикую...';
+};
 
-// Проверка на ввод в поле коментария
-imageForm.addEventListener('input', () => {
-  const isValid = pristine.validate();
-  if (isValid) {
-    buttonSubmit.removeAttribute('disabled');
-  } else {
-    buttonSubmit.setAttribute('disabled', 'disabled');
-  }
-});
+const unblockSubmitButton = () => {
+  buttonSubmit.disabled = false;
+  buttonSubmit.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = () => {
+  imageForm.addEventListener('submit', (evt) => {
+    evt.preventDefault(); // отключили
+
+    //const pristine = new Pristine(imageForm);// может добавить настройки
+    //const isValid = pristine.validate();
+    //if (isValid)
+    if (imageForm.checkValidity())
+    {
+      blockSubmitButton();
+      sendData(
+        () => {
+          closeUserModal(); //закрытие модал
+          unblockSubmitButton();
+          openSuccessMessage();
+          imageForm.reset();
+        },
+        () => {
+          openErrorMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+export {setUserFormSubmit, openUserModal, onModalEscKeydown, isEscapeKey};
