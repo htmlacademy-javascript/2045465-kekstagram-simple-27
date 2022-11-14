@@ -27,13 +27,14 @@ let currentStyle = 'none';
 
 // Доступные стили
 const specialEffect = {
-  'none': {range: {
-    min: 0,
-    max: 100,
-  },
-  step: 1,
-  style: '',
-  unit: '',
+  'none': {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    step: 1,
+    style: '',
+    unit: '',
   },
   'chrome': {
     range: {
@@ -45,41 +46,45 @@ const specialEffect = {
     style: 'grayscale',
     unit: '',
   },
-  'sepia': {range: {
-    min: 0,
-    max: 1,
+  'sepia': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    style: 'sepia',
+    unit: '',
   },
-  start: 1,
-  step: 0.1,
-  style: 'sepia',
-  unit: '',
+  'marvin': {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    style: 'invert',
+    unit: '%',
   },
-  'marvin': {range: {
-    min: 0,
-    max: 100,
+  'phobos': {
+    range: {
+      min: 0,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    style: 'blur',
+    unit: 'px',
   },
-  start: 100,
-  step: 1,
-  style: 'invert',
-  unit: '%',
-  },
-  'phobos': {range: {
-    min: 0,
-    max: 3,
-  },
-  start: 3,
-  step: 0.1,
-  style: 'blur',
-  unit: 'px',
-  },
-  'heat': {range: {
-    min: 1,
-    max: 3,
-  },
-  start: 3,
-  step: 0.1,
-  style: 'brightness',
-  unit: '',
+  'heat': {
+    range: {
+      min: 1,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    style: 'brightness',
+    unit: '',
   }
 };
 
@@ -92,7 +97,7 @@ const onModalEscKeydown = (evt) => {
   if (isEscapeKey(evt) && !isCommentFocused()) {
     evt.preventDefault();
     if (!document.querySelector('.error')){
-      closeUserModal ();
+      closeUserModal();
     }
   }
 };
@@ -114,7 +119,6 @@ function openUserModal () {
   body.classList.add('modal-open');
   // Добавить обработчик закрытия
   document.addEventListener('keydown', onModalEscKeydown);
-  //buttonSubmit.disabled = true;
 }
 
 function closeUserModal () {
@@ -184,7 +188,7 @@ sliderElement.noUiSlider.on('update', () => {
 const updateSlider = (chosenEffect) => {
   sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
   effectLevel.classList.remove('hidden');
-  sliderElement.noUiSlider.set(specialEffect[chosenEffect].start); // потому что updateOption не обнавляет start
+  sliderElement.noUiSlider.set(specialEffect[chosenEffect].start);
   if (chosenEffect === 'none') {
     effectLevel.classList.add('hidden');
   }
@@ -213,7 +217,7 @@ const setUserFormSubmit = () => {
   imageForm.addEventListener('submit', (evt) => {
     evt.preventDefault(); // отключили
 
-    if (imageForm.checkValidity())
+    if (imageForm)
     {
       blockSubmitButton();
       sendData(

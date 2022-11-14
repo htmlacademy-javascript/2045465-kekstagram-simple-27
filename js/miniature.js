@@ -1,4 +1,4 @@
-const getPhotoMiniature = (pictures) => {
+const renderPhotoMiniature = (pictures) => {
   const picturesСontainer = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const picturesСontainerFragment = document.createDocumentFragment();
@@ -17,4 +17,4 @@ const getPhotoMiniature = (pictures) => {
   picturesСontainer.append(picturesСontainerFragment);
 };
 
-export {getPhotoMiniature};
+export {renderPhotoMiniature};
