@@ -11,15 +11,11 @@ const getData = (onSuccess) => {
     });
 };
 
-
 const sendData = (onSuccess, onFail, body) => {
   fetch(
     'https://27.javascript.pages.academy/kekstagram-simple',
     {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'multipart/form-data'
-      // },
       body: body,
     },
   )

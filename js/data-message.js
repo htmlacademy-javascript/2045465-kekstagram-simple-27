@@ -8,7 +8,6 @@ const onMessageEscKeydown = (evt) => {
     evt.preventDefault();
     hideMessage();
   }
-
 };
 
 const onSuccessButtonClick = () => {

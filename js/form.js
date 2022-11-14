@@ -17,9 +17,6 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level');
 
-//const pristine = new Pristine(imageForm);// может добавить настройки
-
-
 // Переменные для масштабирования
 const minScale = 25;
 const maxScale = 100;
@@ -27,6 +24,64 @@ let userScale = 100;
 
 // Переменная для хранения текушего эффекта
 let currentStyle = 'none';
+
+// Доступные стили
+const specialEffect = {
+  'none': {range: {
+    min: 0,
+    max: 100,
+  },
+  step: 1,
+  style: '',
+  unit: '',
+  },
+  'chrome': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    style: 'grayscale',
+    unit: '',
+  },
+  'sepia': {range: {
+    min: 0,
+    max: 1,
+  },
+  start: 1,
+  step: 0.1,
+  style: 'sepia',
+  unit: '',
+  },
+  'marvin': {range: {
+    min: 0,
+    max: 100,
+  },
+  start: 100,
+  step: 1,
+  style: 'invert',
+  unit: '%',
+  },
+  'phobos': {range: {
+    min: 0,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  style: 'blur',
+  unit: 'px',
+  },
+  'heat': {range: {
+    min: 1,
+    max: 3,
+  },
+  start: 3,
+  step: 0.1,
+  style: 'brightness',
+  unit: '',
+  }
+};
 
 //Поле в фокусе - esc не работает
 const isCommentFocused = () => document.activeElement === comment;
@@ -104,65 +159,6 @@ buttonBigger.addEventListener('click', () => {
   scaleBigger();
 });
 
-
-// Доступные стили
-const specialEffect = {
-  'none': {range: {
-    min: 0,
-    max: 100,
-  },
-  step: 1,
-  style: '',
-  unit: '',
-  },
-  'chrome': {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-    style: 'grayscale',
-    unit: '',
-  },
-  'sepia': {range: {
-    min: 0,
-    max: 1,
-  },
-  start: 1,
-  step: 0.1,
-  style: 'sepia',
-  unit: '',
-  },
-  'marvin': {range: {
-    min: 0,
-    max: 100,
-  },
-  start: 100,
-  step: 1,
-  style: 'invert',
-  unit: '%',
-  },
-  'phobos': {range: {
-    min: 0,
-    max: 3,
-  },
-  start: 3,
-  step: 0.1,
-  style: 'blur',
-  unit: 'px',
-  },
-  'heat': {range: {
-    min: 1,
-    max: 3,
-  },
-  start: 3,
-  step: 0.1,
-  style: 'brightness',
-  unit: '',
-  }
-};
-
 // создаем слайдер
 noUiSlider.create(sliderElement, {
   start: 0,
@@ -202,18 +198,6 @@ effectsList.addEventListener('change', (evt) => {
   updateSlider(currentStyle);
 });
 
-// //Валидация - она же по новым условиям проверяется только при отправке?
-// const pristine = new Pristine(imageForm);
-// // Проверка на ввод в поле коментария
-// imageForm.addEventListener('input', () => {
-//   const isValid = pristine.validate();
-//   if (isValid) {
-//     buttonSubmit.disabled = false;
-//   } else {
-//     buttonSubmit.disabled = true;
-//   }
-// });
-
 //отправка данных на сервер
 const blockSubmitButton = () => {
   buttonSubmit.disabled = true;
@@ -229,9 +213,6 @@ const setUserFormSubmit = () => {
   imageForm.addEventListener('submit', (evt) => {
     evt.preventDefault(); // отключили
 
-    //const pristine = new Pristine(imageForm);// может добавить настройки
-    //const isValid = pristine.validate();
-    //if (isValid)
     if (imageForm.checkValidity())
     {
       blockSubmitButton();
@@ -252,4 +233,4 @@ const setUserFormSubmit = () => {
   });
 };
 
-export {setUserFormSubmit, openUserModal, onModalEscKeydown, isEscapeKey};
+export {setUserFormSubmit, isEscapeKey};
