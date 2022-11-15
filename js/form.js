@@ -188,7 +188,6 @@ sliderElement.noUiSlider.on('update', () => {
 const updateSlider = (chosenEffect) => {
   sliderElement.noUiSlider.updateOptions(specialEffect[chosenEffect]);
   effectLevel.classList.remove('hidden');
-  sliderElement.noUiSlider.set(specialEffect[chosenEffect].start);
   if (chosenEffect === 'none') {
     effectLevel.classList.add('hidden');
   }
@@ -216,24 +215,20 @@ const unblockSubmitButton = () => {
 const setUserFormSubmit = () => {
   imageForm.addEventListener('submit', (evt) => {
     evt.preventDefault(); // отключили
-
-    if (imageForm)
-    {
-      blockSubmitButton();
-      sendData(
-        () => {
-          closeUserModal(); //закрытие модал
-          unblockSubmitButton();
-          openSuccessMessage();
-          imageForm.reset();
-        },
-        () => {
-          openErrorMessage();
-          unblockSubmitButton();
-        },
-        new FormData(evt.target),
-      );
-    }
+    blockSubmitButton();
+    sendData(
+      () => {
+        closeUserModal(); //закрытие модал
+        unblockSubmitButton();
+        openSuccessMessage();
+        imageForm.reset();
+      },
+      () => {
+        openErrorMessage();
+        unblockSubmitButton();
+      },
+      new FormData(evt.target),
+    );
   });
 };
 
