@@ -20,7 +20,7 @@ const effectLevel = document.querySelector('.effect-level');
 // Переменные для масштабирования
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
-let userScale = 100;
+let userScale = 100;//значение изменяется в ходе выполнения программы
 
 // Переменная для хранения текушего эффекта
 let currentStyle = 'none';
