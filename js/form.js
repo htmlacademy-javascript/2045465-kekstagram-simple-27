@@ -18,9 +18,9 @@ const sliderElement = document.querySelector('.effect-level__slider');
 const effectLevel = document.querySelector('.effect-level');
 
 // Переменные для масштабирования
-const minScale = 25;
-const maxScale = 100;
-let userScale = 100;
+const MIN_SCALE = 25;
+const MAX_SCALE = 100;
+let userScale = 100;//значение изменяется в ходе выполнения программы
 
 // Переменная для хранения текушего эффекта
 let currentStyle = 'none';
@@ -140,16 +140,16 @@ buttonCancel.addEventListener('click', () => {
 });
 
 const scaleSmaller = () => {
-  if(userScale > minScale) {
-    userScale -= minScale;
+  if(userScale > MIN_SCALE) {
+    userScale -= MIN_SCALE;
     scaleValue.value = `${userScale} %`;
     uploadImage.style.transform = `scale(${userScale / 100})`;
   }
 };
 
 const scaleBigger = () => {
-  if(userScale < maxScale) {
-    userScale += minScale;
+  if(userScale < MAX_SCALE) {
+    userScale += MIN_SCALE;
     scaleValue.value = `${userScale} %`;
     uploadImage.style.transform = `scale(${userScale / 100})`;
   }
